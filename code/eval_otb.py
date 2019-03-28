@@ -5,6 +5,8 @@ import glob
 from os.path import join as fullfile
 import numpy as np
 
+os.chdir(os.path.dirname(sys.argv[0]))
+
 
 def overlap_ratio(rect1, rect2):
     '''
@@ -72,7 +74,7 @@ def eval_auc(dataset='OTB2015', tracker_reg='S*', start=0, end=1e6):
                'suv', 'motorRolling', 'mountainBike', 'lemming', 'liquor', 'woman', 'faceocc1', 'faceocc2',
                'basketball', 'football', 'subway', 'tiger1', 'tiger2']
 
-    trackers = glob.glob(fullfile('test', dataset, tracker_reg))
+    trackers = glob.glob(fullfile('..','test', dataset, tracker_reg))
     trackers = trackers[start:min(end, len(trackers))]
 
     n_seq = len(seqs)
@@ -134,11 +136,16 @@ def eval_auc(dataset='OTB2015', tracker_reg='S*', start=0, end=1e6):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) < 5:
-        print('python eval_otb.py OTB2015 Siam* 0 10')
-        exit()
-    dataset = sys.argv[1]
-    tracker_reg = sys.argv[2]
-    start = int(float(sys.argv[3]))
-    end = int(float(sys.argv[4]))
+    # if len(sys.argv) < 5:
+    #     print('python eval_otb.py OTB2015 Siam* 0 10')
+    #     exit()
+    # dataset = sys.argv[1]
+    # tracker_reg = sys.argv[2]
+    # start = int(float(sys.argv[3]))
+    # end = int(float(sys.argv[4]))
+    dataset = 'OTB2015'
+    tracker_reg = 'Siam*'
+    start = 0
+    end = 1
+
     eval_auc(dataset, tracker_reg, start, end)

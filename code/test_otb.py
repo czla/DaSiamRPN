@@ -22,7 +22,7 @@ parser.add_argument('-v', '--visualization', dest='visualization', action='store
 
 def track_video(model, video):
     toc, regions = 0, []
-    image_files, gt = video['image_files'], video['gt']
+    image_files, gt = video ['image_files'], video['gt']
     for f, image_file in enumerate(image_files):
         im = cv2.imread(image_file)  # TODO: batch load
         tic = cv2.getTickCount()
