@@ -40,7 +40,6 @@ def compute_success_overlap(gt_bb, result_bb):
         success[i] = sum(iou > thresholds_overlap[i]) / float(n_frame)
     return success
 
-
 def compute_success_error(gt_center, result_center):
     thresholds_error = np.arange(0, 51, 1)
     n_frame = len(gt_center)
@@ -49,7 +48,6 @@ def compute_success_error(gt_center, result_center):
     for i in range(len(thresholds_error)):
         success[i] = sum(dist <= thresholds_error[i]) / float(n_frame)
     return success
-
 
 def get_result_bb(arch, seq):
     result_path = fullfile(arch, seq + '.txt')
@@ -144,8 +142,8 @@ if __name__ == "__main__":
     # start = int(float(sys.argv[3]))
     # end = int(float(sys.argv[4]))
     dataset = 'OTB2015'
-    tracker_reg = 'Siam*'
+    tracker_reg = 'DaSiam*'
     start = 0
-    end = 1
+    end = 2
 
     eval_auc(dataset, tracker_reg, start, end)
