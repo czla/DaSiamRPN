@@ -50,7 +50,7 @@ def get_subwindow_tracking(im, pos, model_sz, original_sz, avg_chans, out_mode='
         pos = [pos, pos]
     sz = original_sz
     im_sz = im.shape
-    c = (original_sz+1) / 2
+    c = (original_sz+1) // 2
     context_xmin = round(pos[0] - c)  # floor(pos(2) - sz(2) / 2);
     context_xmax = context_xmin + sz - 1
     context_ymin = round(pos[1] - c)  # floor(pos(1) - sz(1) / 2);
@@ -80,9 +80,10 @@ def get_subwindow_tracking(im, pos, model_sz, original_sz, avg_chans, out_mode='
             te_im[:, c + left_pad:, :] = avg_chans
         im_patch_original = te_im[int(context_ymin):int(context_ymax + 1), int(context_xmin):int(context_xmax + 1), :]
     else:
+        # crop a patch from src image, with context info
         im_patch_original = im[int(context_ymin):int(context_ymax + 1), int(context_xmin):int(context_xmax + 1), :]
 
-    if not np.array_equal(model_sz, original_sz):
+    if not np.array_equal(model_sz, original_sz):   # model_sz is size of examplar img
         im_patch = cv2.resize(im_patch_original, (model_sz, model_sz))  # zzp: use cv to get a better speed
     else:
         im_patch = im_patch_original
@@ -90,10 +91,12 @@ def get_subwindow_tracking(im, pos, model_sz, original_sz, avg_chans, out_mode='
     return im_to_torch(im_patch) if out_mode in 'torch' else im_patch
 
 
+# transfer target_pos[center.x, center.y] and target_size[w, h] to [lefttop.x, lefttop.y, w, h]
 def cxy_wh_2_rect(pos, sz):
     return np.array([pos[0]-sz[0]/2, pos[1]-sz[1]/2, sz[0], sz[1]])  # 0-index
 
 
+# transfer [lefttop.x, lefttop.y, w, h] to [center.x, center.y, w, h]
 def rect_2_cxy_wh(rect):
     return np.array([rect[0]+rect[2]/2, rect[1]+rect[3]/2]), np.array([rect[2], rect[3]])  # 0-index
 

@@ -29,13 +29,13 @@ def generate_anchor(total_stride, scales, ratios, score_size):
             anchor[count, 3] = hhs
             count += 1
 
-    anchor = np.tile(anchor, score_size * score_size).reshape((-1, 4))
-    ori = - (score_size / 2) * total_stride
+    anchor = np.tile(anchor, score_size * score_size).reshape((-1, 4))      # set all anchors' width and height
+    ori = - (score_size // 2) * total_stride
     xx, yy = np.meshgrid([ori + total_stride * dx for dx in range(score_size)],
                          [ori + total_stride * dy for dy in range(score_size)])
     xx, yy = np.tile(xx.flatten(), (anchor_num, 1)).flatten(), \
              np.tile(yy.flatten(), (anchor_num, 1)).flatten()
-    anchor[:, 0], anchor[:, 1] = xx.astype(np.float32), yy.astype(np.float32)
+    anchor[:, 0], anchor[:, 1] = xx.astype(np.float32), yy.astype(np.float32)   # set all anchors' x and y
     return anchor
 
 
@@ -131,7 +131,7 @@ def SiamRPN_init(im, target_pos, target_sz, net):
 
     p.anchor = generate_anchor(p.total_stride, p.scales, p.ratios, int(p.score_size))
 
-    avg_chans = np.mean(im, axis=(0, 1))
+    avg_chans = np.mean(im, axis=(0, 1))    # average of every channel(0, 1, 2)
 
     wc_z = target_sz[0] + p.context_amount * sum(target_sz)
     hc_z = target_sz[1] + p.context_amount * sum(target_sz)

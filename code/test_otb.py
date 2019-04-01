@@ -14,15 +14,17 @@ from net import SiamRPNotb
 from run_SiamRPN import SiamRPN_init, SiamRPN_track
 from utils import rect_2_cxy_wh, cxy_wh_2_rect
 
+from collections import OrderedDict
+
 parser = argparse.ArgumentParser(description='PyTorch SiamRPN OTB Test')
 parser.add_argument('--dataset', dest='dataset', default='OTB2015', help='datasets')
-parser.add_argument('-v', '--visualization', dest='visualization', action='store_true',
+parser.add_argument('-v', '--visualization', dest='visualization', default=False, action='store_true',
                     help='whether visualize result')
 
 
 def track_video(model, video):
     toc, regions = 0, []
-    image_files, gt = video ['image_files'], video['gt']
+    image_files, gt = video['image_files'], video['gt']
     for f, image_file in enumerate(image_files):
         im = cv2.imread(image_file)  # TODO: batch load
         tic = cv2.getTickCount()
@@ -38,7 +40,8 @@ def track_video(model, video):
         toc += cv2.getTickCount() - tic
 
         if args.visualization and f >= 0:  # visualization
-            if f == 0: cv2.destroyAllWindows()
+            if f == 0:
+                cv2.destroyAllWindows()
             if len(gt[f]) == 8:
                 cv2.polylines(im, [np.array(gt[f], np.int).reshape((-1, 1, 2))], True, (0, 255, 0), 3)
             else:
@@ -56,7 +59,7 @@ def track_video(model, video):
     toc /= cv2.getTickFrequency()
 
     # save result
-    video_path = join('test', args.dataset, 'SiamRPN_AlexNet_OTB2015')
+    video_path = join('../test', args.dataset, 'SiamRPN_AlexNet_OTB2015')
     if not isdir(video_path): makedirs(video_path)
     result_path = join(video_path, '{:s}.txt'.format(video['name']))
     with open(result_path, "w") as fin:
@@ -74,7 +77,7 @@ def load_dataset(dataset):
         print("Please download OTB dataset into `data` folder!")
         exit()
     json_path = join(realpath(dirname(__file__)), 'data', dataset + '.json')
-    info = json.load(open(json_path, 'r'))
+    info = json.load(open(json_path, 'r'), object_pairs_hook=OrderedDict)
     for v in info.keys():
         path_name = info[v]['name']
         info[v]['image_files'] = [join(base_path, path_name, 'img', im_f) for im_f in info[v]['image_files']]

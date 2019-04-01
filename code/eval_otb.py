@@ -142,8 +142,8 @@ if __name__ == "__main__":
     # start = int(float(sys.argv[3]))
     # end = int(float(sys.argv[4]))
     dataset = 'OTB2015'
-    tracker_reg = 'DaSiam*'
+    tracker_reg = 'Siam*'
     start = 0
-    end = 2
+    end = 1
 
     eval_auc(dataset, tracker_reg, start, end)
